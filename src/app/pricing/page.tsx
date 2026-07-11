@@ -8,14 +8,59 @@ import { Check } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "Pricing",
-  description: "Free plan with 5 posts, Pro at $29/mo for unlimited, Enterprise for teams. No credit card required to start.",
+  description: "Free plan with 5 posts, Pro at $29/mo for unlimited, Business at $59/mo for teams. No credit card required to start.",
   alternates: { canonical: "/pricing" },
 }
 
 const plans = [
-  { name: "Free", price: "$0", period: "/mo", desc: "For getting started with YouTube to blog conversion.", features: ["5 posts per month", "Basic SEO metadata", "Standard AI model", "Markdown export"], cta: "Get Started" },
-  { name: "Pro", price: "$29", period: "/mo", desc: "For serious creators who need unlimited content.", features: ["50 posts per month", "Advanced SEO", "High-quality AI model", "Priority support"], cta: "Start Free Trial", popular: true },
-  { name: "Enterprise", price: "Custom", period: "", desc: "For teams and agencies.", features: ["Unlimited posts", "Custom AI fine-tuning", "API access", "Dedicated support"], cta: "Contact Sales" },
+  {
+    name: "FREE",
+    price: "$0",
+    period: "",
+    desc: "For casual users and evaluation.",
+    features: [
+      "YouTube transcript extraction",
+      "Videos up to 10 minutes",
+      "Markdown editor with preview",
+      "SEO metadata generation",
+      "Thumbnail picker",
+    ],
+    cta: "Get Started",
+    href: "/sign-up",
+  },
+  {
+    name: "PRO",
+    price: "$29",
+    period: "/month",
+    desc: "For content creators and bloggers.",
+    features: [
+      "Everything in Free",
+      "Unlimited video length",
+      "AI-powered content rewriting",
+      "AI-optimized SEO tags & titles",
+      "FAQs Schema auto-generation",
+      "WordPress / Medium export",
+    ],
+    cta: "Sign in to Upgrade",
+    href: "/sign-in",
+    popular: true,
+  },
+  {
+    name: "BUSINESS",
+    price: "$59",
+    period: "/month",
+    desc: "For teams and agencies.",
+    features: [
+      "Everything in Pro",
+      "5 team seats",
+      "API access for batch processing",
+      "Custom brand templates",
+      "Priority support",
+      "SSO / SAML",
+    ],
+    cta: "Sign in to Upgrade",
+    href: "/sign-in",
+  },
 ]
 
 const faq = [
@@ -33,7 +78,7 @@ export default function PricingPage() {
         <section className="border-b py-20">
           <div className="mx-auto max-w-4xl px-4 text-center">
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Simple, transparent pricing</h1>
-            <p className="mt-4 text-lg text-muted-foreground">Start free. Upgrade when you grow. No hidden fees.</p>
+            <p className="mt-4 text-lg text-muted-foreground">Start free. Upgrade when you outgrow us.</p>
           </div>
         </section>
 
@@ -69,7 +114,7 @@ export default function PricingPage() {
                         </li>
                       ))}
                     </ul>
-                    <a href={plan.name === "Free" ? "/sign-up" : plan.name === "Enterprise" ? "mailto:sales@tube2blog.com" : "/api/checkout?plan=PRO_MONTHLY"} className="mt-auto w-full">
+                    <a href={plan.href} className="mt-auto w-full">
                       <Button variant={plan.popular ? "default" : "outline"} className="w-full">{plan.cta}</Button>
                     </a>
                   </CardContent>
