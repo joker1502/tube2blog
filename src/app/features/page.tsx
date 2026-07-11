@@ -15,7 +15,7 @@ import { JsonLd } from "@/components/json-ld";
 import { Globe, Sparkles, Search, FileText, Video, Zap, Check, ArrowRight, Film, PenLine, Mic, Megaphone, GraduationCap } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Features - YouTube to Blog Post Generator - Tube2Blog",
+  title: "Features - YouTube to Blog Post Generator",
   description:
     "Tube2Blog features: AI-powered YouTube transcript to blog post converter. Extract transcripts, generate SEO metadata, export Markdown. The best video to blog post generator.",
   alternates: { canonical: "/features" },

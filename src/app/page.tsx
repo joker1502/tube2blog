@@ -11,7 +11,7 @@ import { HomeTool } from "./home-tool";
 import { Sparkles, Search, FileText, Zap, ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "YouTube to Blog Post Converter - Turn Videos into SEO Content - Tube2Blog",
+  title: "YouTube to Blog Post Converter - Turn Videos into SEO Content",
   description:
     "Free YouTube to blog converter: paste any YouTube URL and get an AI-written SEO blog post in seconds. Extract transcripts, generate metadata, export Markdown. The easiest video to blog post generator for creators.",
   keywords: [
@@ -28,12 +28,12 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/" },
   openGraph: {
-    title: "YouTube to Blog Post Converter - Turn Videos into SEO Content - Tube2Blog",
+    title: "YouTube to Blog Post Converter - Turn Videos into SEO Content",
     description:
       "Free YouTube to blog converter: paste any YouTube URL and get an AI-written SEO blog post in seconds. Extract transcripts, generate metadata, export Markdown.",
   },
   twitter: {
-    title: "YouTube to Blog Post Converter - Turn Videos into SEO Content - Tube2Blog",
+    title: "YouTube to Blog Post Converter - Turn Videos into SEO Content",
     description:
       "Free YouTube to blog converter: paste any YouTube URL and get an AI-written SEO blog post in seconds.",
   },
