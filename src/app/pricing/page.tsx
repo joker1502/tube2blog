@@ -7,8 +7,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Check } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Pricing",
-  description: "Free plan with 5 posts, Pro at $29/mo for unlimited, Business at $59/mo for teams. No credit card required to start.",
+  title: "Pricing - YouTube to Blog Post Plans | Tube2Blog",
+  description: "Free YouTube to blog converter with 5 posts. Pro at $29/mo for unlimited video to blog conversion. Business at $59/mo for teams. No credit card required.",
   alternates: { canonical: "/pricing" },
 }
 

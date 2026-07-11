@@ -6,8 +6,9 @@ import { Footer } from "@/components/footer";
 import { getAllPosts, formatTag } from "@/lib/blog";
 
 export const metadata: Metadata = {
-  title: "Blog",
-  description: "Learn how to repurpose video content into SEO-optimized blog posts.",
+  title: "Blog - YouTube to Blog Tips & Guides | Tube2Blog",
+  description:
+    "Learn how to turn YouTube videos into SEO blog posts. Tips on video to blog workflow, transcript to post conversion, and repurposing video content for SEO.",
   keywords: [
     "youtube video to blog post",
     "video to blog post generator",

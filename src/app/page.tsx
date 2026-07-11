@@ -11,14 +11,15 @@ import { HomeTool } from "./home-tool";
 import { Sparkles, Search, FileText, Zap, ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Tube2Blog - From YouTuber to Automated Blogger in Seconds",
+  title: "YouTube to Blog Post Converter - Turn Videos into SEO Content | Tube2Blog",
   description:
-    "Turn YouTube videos into SEO-optimized blog posts in 30 seconds. Extract transcripts, generate metadata, and export clean Markdown. Double your content output from every video — free, no sign-up required.",
+    "Free YouTube to blog converter: paste any YouTube URL and get an AI-written SEO blog post in seconds. Extract transcripts, generate metadata, export Markdown. The easiest video to blog post generator for creators.",
   keywords: [
     "youtube video to blog post",
     "youtube video to blog post ai",
     "youtube to blog converter",
     "podcast to blog post ai",
+    "podcast to blog post converter",
     "video to blog post generator",
     "youtube transcript to blog post",
     "ai blog writer from video",
@@ -27,14 +28,14 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Tube2Blog - From YouTuber to Automated Blogger in Seconds",
+    title: "YouTube to Blog Post Converter - Turn Videos into SEO Content | Tube2Blog",
     description:
-      "Turn YouTube videos into SEO-optimized blog posts in 30 seconds. Double your content output from every video with AI-powered transcription, SEO metadata, and Markdown export.",
+      "Free YouTube to blog converter: paste any YouTube URL and get an AI-written SEO blog post in seconds. Extract transcripts, generate metadata, export Markdown.",
   },
   twitter: {
-    title: "Tube2Blog - From YouTuber to Automated Blogger in Seconds",
+    title: "YouTube to Blog Post Converter - Turn Videos into SEO Content | Tube2Blog",
     description:
-      "Turn YouTube videos into SEO-optimized blog posts in 30 seconds. Double your content output from every video.",
+      "Free YouTube to blog converter: paste any YouTube URL and get an AI-written SEO blog post in seconds.",
   },
 };
 
