@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  EXPIRED
+  PAST_DUE
+}
+
+model User {
+  id             String   @id @default(uuid())
+  email          String   @unique
+  name           String?
+  credits        Int      @default(0)
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  videos         YouTubeVideo[]
+  posts          BlogPost[]
+  subscription   Subscription?
+  transactions   CreditTransaction[]
+
+  @@map("users")
+}
+
+model YouTubeVideo {
+  id         String    @id @default(uuid())
+  userId     String    @map("user_id")
+  url        String
+  videoId    String    @map("video_id")
+  title      String?
+  transcript String?
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  posts      BlogPost[]
+
+  @@unique([userId, videoId])
+  @@map("youtube_videos")
+}
+
+model BlogPost {
+  id          String     @id @default(uuid())
+  userId      String     @map("user_id")
+  videoId     String     @map("video_id")
+  title       String
+  content     String
+  status      PostStatus @default(DRAFT)
+  seoData     Json?      @map("seo_data")
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+  publishedAt DateTime?  @map("published_at")
+
+  user  User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  video YouTubeVideo @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@map("blog_posts")
+}
+
+model Subscription {
+  id                  String             @id @default(uuid())
+  userId              String             @unique @map("user_id")
+  creemSubscriptionId String             @unique @map("creem_subscription_id")
+  planId              String             @map("plan_id")
+  status              SubscriptionStatus
+  currentPeriodEnd    DateTime           @map("current_period_end")
+  createdAt           DateTime           @default(now()) @map("created_at")
+  updatedAt           DateTime           @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+model CreditTransaction {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  amount      Int
+  type        String
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("credit_transactions")
+}

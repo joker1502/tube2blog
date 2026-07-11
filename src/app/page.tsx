@@ -1,65 +1,102 @@
-import Image from "next/image";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
+import { HomeTool } from "./home-tool";
+import { Sparkles, Search, FileText, Zap, ArrowRight } from "lucide-react";
 
-export default function Home() {
+export const metadata: Metadata = {
+  title: "YouTube to SEO Blog Post Generator",
+  description:
+    "Turn YouTube videos into SEO-optimized blog posts in 30 seconds. Extract transcripts, generate metadata, and export clean Markdown. Double your content output from every video — free, no sign-up required.",
+  keywords: [
+    "youtube video to blog post",
+    "youtube video to blog post ai",
+    "youtube to blog converter",
+    "podcast to blog post ai",
+    "video to blog post generator",
+    "youtube transcript to blog post",
+    "ai blog writer from video",
+    "repurpose youtube videos into blogs",
+    "automated blogging from video",
+  ],
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "Tube2Blog - From YouTuber to Automated Blogger in Seconds",
+    description:
+      "Turn YouTube videos into SEO-optimized blog posts in 30 seconds. Double your content output from every video with AI-powered transcription, SEO metadata, and Markdown export.",
+  },
+  twitter: {
+    title: "Tube2Blog - From YouTuber to Automated Blogger in Seconds",
+    description:
+      "Turn YouTube videos into SEO-optimized blog posts in 30 seconds. Double your content output from every video.",
+  },
+};
+
+const highlights = [
+  { icon: Sparkles, text: "AI extracts transcript & generates SEO blog post" },
+  { icon: Search, text: "Proper headings, meta descriptions, and Schema markup" },
+  { icon: FileText, text: "Export clean Markdown for any CMS" },
+  { icon: Zap, text: "Free to start. No sign-up required." },
+];
+
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <div className="flex flex-col min-h-full">
+      <Header />
+      <main className="flex-1">
+        <section className="mx-auto max-w-3xl px-4 pt-20 pb-16">
+          <div className="text-center mb-12">
+            <Badge variant="outline" className="mb-4">
+              AI-Powered YouTube to Blog Converter
+            </Badge>
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+              YouTube to Blog Post
+            </h1>
+            <p className="mt-4 text-lg text-muted-foreground max-w-xl mx-auto">
+              Paste a YouTube URL. Get an SEO-optimized blog post in seconds.
+              No sign-up required.
+            </p>
+          </div>
+
+          <HomeTool />
+
+          <div className="mt-20 grid gap-6 sm:gap-8 sm:grid-cols-2">
+            {highlights.map((h) => {
+              const Icon = h.icon;
+              return (
+                <div key={h.text} className="flex items-start gap-3 text-sm text-muted-foreground">
+                  <div className="flex size-8 shrink-0 items-center justify-center rounded-lg border bg-brand-light text-brand dark:bg-brand/10">
+                    <Icon className="size-4" />
+                  </div>
+                  <span className="pt-1.5">{h.text}</span>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="border-t">
+          <div className="mx-auto max-w-3xl px-4 py-16 text-center">
+            <h2 className="text-2xl font-bold tracking-tight">
+              Ready for more? Unlock AI rewriting and unlimited length.
+            </h2>
+            <div className="mt-6 flex justify-center gap-3">
+              <Link href="/features" className={cn(buttonVariants({ variant: "outline" }))}>
+                Learn More
+              </Link>
+              <Link href="/pricing" className={cn(buttonVariants())}>
+                View Pricing <ArrowRight className="size-4" />
+              </Link>
+            </div>
+          </div>
+        </section>
       </main>
+      <Footer />
     </div>
   );
 }
