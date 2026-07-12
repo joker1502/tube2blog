@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import { ThemeProvider } from "@/components/theme-provider";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -68,11 +67,9 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        <TooltipProvider>
-          <ThemeProvider>
-            {children}
-          </ThemeProvider>
-        </TooltipProvider>
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-6CC8HV421L"
           strategy="afterInteractive"
