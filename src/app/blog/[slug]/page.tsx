@@ -58,8 +58,19 @@ export default async function BlogPostPage({ params }: PageProps) {
 
           <div className="flex gap-10">
             <div className="min-w-0 flex-1">
+              <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{post.title}</h1>
+
+              <div className="mt-4 flex items-center gap-4 text-sm text-muted-foreground">
+                <span className="flex items-center gap-1"><Calendar className="size-3" />{post.date}</span>
+                <span className="flex items-center gap-1"><Clock className="size-3" />{post.readTime}</span>
+              </div>
+
+              <div className="mt-10">
+                <MarkdownContent content={post.content} />
+              </div>
+
               {post.tags && post.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-4">
+                <div className="mt-10 flex flex-wrap gap-2">
                   {post.tags.map((tag) => (
                     <Link
                       key={tag}
@@ -72,17 +83,6 @@ export default async function BlogPostPage({ params }: PageProps) {
                   ))}
                 </div>
               )}
-
-              <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{post.title}</h1>
-
-              <div className="mt-4 flex items-center gap-4 text-sm text-muted-foreground">
-                <span className="flex items-center gap-1"><Calendar className="size-3" />{post.date}</span>
-                <span className="flex items-center gap-1"><Clock className="size-3" />{post.readTime}</span>
-              </div>
-
-              <div className="mt-10">
-                <MarkdownContent content={post.content} />
-              </div>
 
               {related.length > 0 && (
                 <div className="mt-16 border-t pt-10">

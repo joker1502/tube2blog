@@ -5,11 +5,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://tube2blog.com";
   const posts = getAllPosts();
 
+  const allTags = [...new Set(posts.flatMap((p) => p.tags ?? []))];
+
   const blogPosts = posts.map((post) => ({
     url: `${baseUrl}/blog/${post.slug}`,
     lastModified: new Date(post.date),
     changeFrequency: "monthly" as const,
     priority: 0.8,
+  }));
+
+  const tagPages = allTags.map((tag) => ({
+    url: `${baseUrl}/blog/tag/${tag}`,
+    changeFrequency: "monthly" as const,
+    priority: 0.5,
   }));
 
   return [
@@ -24,6 +32,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/blog/tag`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.6,
     },
     {
       url: `${baseUrl}/features`,
@@ -50,5 +64,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.3,
     },
     ...blogPosts,
+    ...tagPages,
   ];
 }
