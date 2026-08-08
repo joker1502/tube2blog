@@ -1,0 +1,43 @@
+# Tube2Blog
+
+> Free YouTube to blog converter: paste any YouTube URL and get an AI-written SEO blog post in seconds. Extract transcripts, generate metadata, export Markdown. The easiest video to blog post generator for creators.
+
+## Core Tool
+- [YouTube to Blog Converter](https://tube2blog.com): Paste a YouTube URL, get an AI-written SEO blog post in seconds
+- [Features](https://tube2blog.com/features): Transcript extraction, AI writing, metadata generation, Markdown export
+- [Dashboard](https://tube2blog.com/dashboard): Manage your converted posts
+- [Pricing](https://tube2blog.com/pricing): Free and paid plans
+
+## Blog
+- [10 Proven Ways to Grow Your Audience with Video-to-Blog Content](https://tube2blog.com/blog/10-ways-grow-audience-video-to-blog): Discover ten actionable strategies to expand your reach, build your email list, and grow your audience by combining YouTube videos with repurposed blog content.
+- [How to Avoid Duplicate Content in YouTube-to-Blog Posts](https://tube2blog.com/blog/avoid-duplicate-content-youtube-to-blog): Worried your video-to-blog posts get flagged as duplicate content? Learn why verbatim transcripts fail and how to rewrite them into original, ranking articles.
+- [How to Create a Month of Blog Content in One Day Using YouTube Transcripts](https://tube2blog.com/blog/batch-content-creation-from-youtube-transcripts): Batch-produce an entire month of SEO blog posts from your existing YouTube video transcripts. Save 20+ hours per month with this step-by-step content repurposing workflow.
+- [Best YouTube to Blog Converters in 2026: 7 Tools Compared](https://tube2blog.com/blog/best-youtube-to-blog-converters): We compared 7 YouTube to blog converters in 2026 on speed, accuracy, SEO output, and price. Find the best tool to turn your videos into ranking blog posts.
+- [How to Convert Your First YouTube Video into a Blog Post — Step by Step](https://tube2blog.com/blog/convert-first-youtube-video-to-blog): Paste a YouTube URL into Tube2Blog, get a formatted blog post in under a minute. Real walkthrough with screenshots, SEO tips, and editing workflow for beginners.
+- [How to Distribute Repurposed YouTube Content: A 7-Day Promotion Plan](https://tube2blog.com/blog/distribute-repurposed-youtube-content-7-day-plan): Publishing the blog post is just step one. Learn how to distribute repurposed YouTube content across social, email, and communities to maximize reach and ROI.
+- [How Long Should a Blog Post Be from a YouTube Video?](https://tube2blog.com/blog/how-long-should-a-blog-post-be-from-a-youtube-video): Stop guessing word counts. Match your YouTube-to-blog post length to video type with this practical sizing guide, complete with a per-format benchmark table.
+- [How to Measure the SEO Impact of YouTube-to-Blog Repurposing](https://tube2blog.com/blog/how-to-measure-seo-impact-youtube-to-blog-repurposing): Stop guessing whether repurposing YouTube videos into blog posts works. Learn the exact metrics, tools, and tracking setup to measure SEO impact and prove ROI.
+- [How to Optimize AI-Generated Blog Content Without Losing Your Voice](https://tube2blog.com/blog/how-to-optimize-ai-generated-blog-content): Tube2Blog converts your YouTube video into a draft in 30 seconds. Here's how to edit that draft into something that sounds like you — not like a chatbot.
+- [How to Structure YouTube Videos for Easy Blog Repurposing](https://tube2blog.com/blog/how-to-structure-youtube-videos-for-easy-blog-repurposing): Want blog posts that practically write themselves? Learn how to structure YouTube videos with chapter markers and clear segments for effortless AI repurposing.
+- [How to Use a YouTube to Blog Converter (Step-by-Step)](https://tube2blog.com/blog/how-to-use-youtube-to-blog-converter): Learn how to use a YouTube to blog converter properly: pick the right video, set the right tone, and edit the AI draft into an SEO-ready post in 6 steps.
+- [How to Write Blog Posts from YouTube Videos (6-Step Guide)](https://tube2blog.com/blog/how-to-write-blog-posts-from-youtube-videos): Raw transcripts don't rank. Learn the 6-step framework for turning any YouTube video into a structured, SEO-ready blog post people actually finish reading.
+- [Podcast to Blog Post AI: Turn Episodes into SEO Content Fast](https://tube2blog.com/blog/podcast-to-blog-post-ai-guide): A complete guide to converting podcast episodes into SEO-optimized blog posts using Tube2Blog. Includes a step-by-step workflow, editing tips, and repurposing strategy for podcasters.
+- [How to Repurpose YouTube Videos into High-Traffic Blog Posts](https://tube2blog.com/blog/repurpose-youtube-to-blog-posts): Learn the complete workflow for turning your YouTube videos into SEO-optimized blog posts that drive organic traffic, engage readers, and extend your content's lifespan.
+- [How to Repurpose YouTube Videos Into Email Newsletters](https://tube2blog.com/blog/repurpose-youtube-videos-for-email-newsletters): Turn your YouTube video transcripts into email newsletters that drive blog traffic. A complete workflow for growing subscribers from every video.
+- [Repurpose YouTube Videos for SEO: Strategic Guide to Blog Growth](https://tube2blog.com/blog/repurpose-youtube-videos-for-seo-guide): Your video library is untapped SEO traffic. Learn to repurpose old YouTube content into blog clusters that build topical authority and drive organic growth.
+- [SEO for Video Content: The Complete Guide for 2026](https://tube2blog.com/blog/seo-for-video-content-guide): A comprehensive guide to optimizing your video content for search engines — covering YouTube SEO, blog repurposing, structured data, and the AI-powered strategies that work in 2026.
+- [How to Turn YouTube Chapters into a Blog Post Outline](https://tube2blog.com/blog/turn-youtube-chapters-into-blog-outline): YouTube chapters are a ready-made blog outline. Learn the 5-step method to turn any video's chapter list into SEO-ready headings and publish in under an hour.
+- [How to Turn YouTube Shorts into Blog Posts That Rank](https://tube2blog.com/blog/turn-youtube-shorts-into-blog-posts): YouTube Shorts vanish in 48 hours. Learn to bundle and expand short-form videos into SEO blog posts that keep ranking long after the views stop.
+- [Video-to-Blog vs Manual Transcription: Which Is Faster for Content Repurposing?](https://tube2blog.com/blog/video-to-blog-vs-manual-transcription): Compare automated video-to-blog conversion and manual transcription across time, cost, quality, and SEO. Real data from testing both methods on the same three videos.
+- [How to Turn Webinars into Blog Posts That Drive Traffic for Months](https://tube2blog.com/blog/webinar-to-blog-post-repurposing-guide): Stop letting your webinar recordings collect dust. Learn a proven 4-step system to repurpose one live event into 3-5 SEO-optimized blog posts that generate organic traffic long after the event ends.
+- [Which YouTube Videos to Repurpose First for SEO Growth](https://tube2blog.com/blog/which-youtube-videos-to-repurpose-first): Learn which YouTube videos drive the most SEO traffic as blog posts. A scoring framework to prioritize your back catalog and maximize repurposing ROI.
+- [Why Your Content Strategy Needs Both Video and Blog Posts](https://tube2blog.com/blog/why-your-content-strategy-needs-both-video-and-blog): The case for a dual-format content strategy: why publishing both YouTube videos and repurposed blog posts gives you better reach, higher engagement, and more sustainable growth.
+- [Automated YouTube-to-Blog: Repurpose Content on Autopilot](https://tube2blog.com/blog/youtube-to-blog-automation-pipeline): Stop manually transcribing and rewriting YouTube videos. Set up an automated pipeline that turns every new video into an SEO blog post without touching a keyboard.
+- [YouTube Transcript to Blog: A Step-by-Step Workflow for Content Creators](https://tube2blog.com/blog/youtube-transcript-to-blog-workflow): A detailed walkthrough of turning any YouTube transcript into a polished, SEO-friendly blog post — from extraction to publication, with pro tips at every stage.
+
+## Company
+- [Privacy Policy](https://tube2blog.com/privacy)
+- [Terms of Service](https://tube2blog.com/terms)
+
+## Contact
+- Website: https://tube2blog.com
