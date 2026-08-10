@@ -46,11 +46,14 @@ export function getPost(slug: string): BlogPost | null {
     const words = content.split(/\s+/).length;
     const readTime = Math.max(1, Math.round(words / 200));
 
-    const tags = Array.isArray(data.tags)
-      ? data.tags
+    const rawTags = Array.isArray(data.tags)
+      ? data.tags.filter((t): t is string => typeof t === 'string')
       : data.tags
-        ? [data.tags]
-        : undefined;
+        ? [data.tags as string]
+        : [];
+    const tags = rawTags.map((t: string) =>
+      t.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+    );
 
     return {
       slug,
