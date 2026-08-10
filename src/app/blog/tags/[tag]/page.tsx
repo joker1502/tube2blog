@@ -53,7 +53,7 @@ export default async function TagPage({ params }: PageProps) {
                     {post.tags.map((t) => (
                       <Link
                         key={t}
-                        href={`/blog/tag/${t}`}
+                        href={`/blog/tags/${t}`}
                         className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground hover:bg-muted/80 hover:text-foreground transition-colors"
                       >
                         <Hash className="size-2.5" />

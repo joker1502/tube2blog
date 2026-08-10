@@ -15,7 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   const tagPages = allTags.map((tag) => ({
-    url: `${baseUrl}/blog/tag/${tag}`,
+    url: `${baseUrl}/blog/tags/${tag}`,
     changeFrequency: "monthly" as const,
     priority: 0.5,
   }));
@@ -34,7 +34,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/blog/tag`,
+      url: `${baseUrl}/blog/tags`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.6,
