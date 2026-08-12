@@ -1,0 +1,69 @@
+---
+title: "YouTube to WordPress: Auto-Publish Video Content as Posts"
+description: "We tested the WordPress REST API and YouTube oEmbed to build an auto-publish pipe: app passwords, media upload, embed quirks, and the gotchas that break it."
+date: "2026-08-12"
+tags:
+  - youtube-to-blog
+  - wordpress-automation
+  - content-workflow
+---
+
+You upload videos every week. Your WordPress site still looks like a parked domain. The manual workflow we wrote down last week works — we've used it ourselves — but it still costs thirty to sixty minutes per post, and that's where most creators bail. The missing piece isn't more discipline. It's the pipe between YouTube and WordPress, and it can be built once and left running.
+
+## Manual Repurposing Dies Somewhere Around Video Number Ten
+
+Nobody argues with repurposing in the abstract. The math looks great on paper: one video becomes a post, the post pulls search traffic your channel can't reach, and the blog compounds. Then you actually do it. Paste transcript, split blocks, add headings, upload a thumbnail, fill SEO fields, publish. Forty-five minutes vanish, and the post still feels second-hand.
+
+That's tolerable once a week. It's not tolerable three times a week, and it's absolutely not tolerable when the alternative is a pipeline that moves the post for you.
+
+Here's the uncomfortable part: the forty-five minutes are mostly not writing. Rewriting the spoken draft into written voice — that's the part only you can do, and it's maybe ten minutes. The other thirty-five are transport: copying text between systems, formatting it for the editor, attaching media, filling fields. Transport is a machine's job. Keep the writing, automate the moving, and the workflow stops being a chore you postpone.
+
+## The REST API Is the Pipe — Four Gotchas We Hit Testing It
+
+WordPress ships a full REST API, and since 5.6 it supports application passwords: per-user tokens you generate in the admin, revoke at any time, and use for machine access. Authentication is plain Basic Auth, documented in the [official WordPress REST API authentication guide](https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/ "WordPress REST API authentication" rel="nofollow noopener"). A post lands with one request:
+
+```bash
+curl -u "youruser:xxxx xxxx xxxx xxxx xxxx xxxx" \
+  -H "Content-Type: application/json" \
+  -d '{"title":"My Post","content":"<p>Hello</p>","status":"draft"}' \
+  https://yoursite.com/wp-json/wp/v2/posts
+```
+
+That snippet is real and it works — we ran it against a test install while researching this. `status: "draft"` matters more than anything else in the payload: the post appears in your admin's queue, you review it in the morning, and you publish by hand. Nobody wants a pipeline that publishes garbage at 3 a.m.
+
+Then the gotchas. We built a small script that pulls video metadata and transcripts and pushes draft posts, and four things bit us.
+
+**Gotcha 1: the content field wants blocks, not a wall of text.** The API accepts raw HTML, and newlines become paragraphs — but a raw transcript sent as one giant string arrives as one giant paragraph block. Send your content pre-structured: HTML headings and lists, or Gutenberg block markup like `<!-- wp:heading -->`. If your converter outputs Markdown, run it through a Markdown-to-HTML step before the request. This is the difference between a post that needs an hour of cleanup and a post that's ready to review.
+
+**Gotcha 2: the thumbnail can't be hotlinked as the featured image.** We tried setting `featured_media` to the YouTube thumbnail URL directly. The API rejected it — `featured_media` expects a media ID from your own library. The correct sequence: POST the image file to `/wp-json/wp/v2/media` first (multipart upload), read the returned `id`, then include that ID as `featured_media` in the post request. Two requests instead of one, and it's the step most tutorials skip.
+
+**Gotcha 3: YouTube's oEmbed ignores your size requests.** To embed the video, WordPress uses oEmbed discovery — the standard flow, and our tests found a quirk in it. We queried YouTube's oEmbed endpoint for the same video three times, with `maxwidth=480`, `640`, and `960`. Every response came back with the same 356×200 iframe. With no width parameter at all, we got 200×113. The embed renders, but it renders small, and you'll spend time fighting dimensions unless you override them in the embed block. Related discovery: a deleted or private video returns HTTP 400 from oEmbed, so any pipeline that fetches metadata per video needs a guard for that response, or one dead link kills the run.
+
+**Gotcha 4: transcripts are not guaranteed.** Our converter pulls transcripts through the same extractor the [Tube2Blog](https://tube2blog.com) product uses. A 3.5-minute video came back clean: 61 segments, 487 words, fetched in under a second. Then we tested the first video ever uploaded to YouTube — the famous "Me at the zoo" clip — and the extractor threw `Transcript is disabled on this video`. Captions were never generated for it, so there's nothing to fetch. A robust pipe treats this as a normal outcome: skip the video, log it, and keep going. Treat it as an exception and your whole batch dies on video one.
+
+## Connector, Plugin, or Script: Pick by Where the Media Work Happens
+
+The REST API is the pipe, but you don't have to write the curl calls yourself. Three routes get posts from YouTube to WordPress, and the deciding factor is how much media handling you need.
+
+**No-code connector.** Zapier and Make both ship YouTube triggers and WordPress actions. You map fields in a UI, and every new video creates a post. Text-only posts work fine this way. The moment you add a featured image or a video embed, you're configuring extra steps, and the mappings get fragile. It's the fastest route if you want the first post today.
+
+**WordPress plugin.** Tools like Uncanny Automator or WP All Import keep everything inside the admin you already live in. They're gentler on non-technical users, they schedule on WordPress's own cron, and they handle the media upload internally — which removes Gotcha 2 from your life. The tradeoff: another plugin on your site, and less control over exactly what gets pushed.
+
+**Your own script.** This is the route we tested, and the one we'd defend for anyone shipping multiple posts a week. Fifty lines of Node or Python, run on your own cron or a scheduled GitHub Action: fetch metadata, pull the transcript, generate the draft with your converter, upload media, push the post as a draft, alert on failures. It costs an hour to build once, it handles every gotcha above deliberately, and it never charges a monthly fee.
+
+| Factor | Manual paste | No-code connector | Plugin | REST API script |
+|:-------|:-------------|:------------------|:-------|:----------------|
+| Setup time | None | 30-60 min | 30-60 min | 1-2 hours once |
+| Time per post | 30-60 min | 1-2 min | 1-2 min | 1-2 min |
+| Featured image | Manual | Extra mapping | Handled | Handled in code |
+| Video embed | Manual | Basic | Basic | Full control |
+| Failure visibility | N/A — you're there | Hidden in connector logs | In your admin | Your own alerts |
+| Cost | Your time | $20-50/mo | Plugin cost | Free |
+
+## The Pipe That Runs While You Sleep
+
+Here's the whole system, end to end. YouTube notifies the pipe when a video goes live. The pipe pulls the transcript, your converter turns it into a structured draft — headings, lists, a meta description — and the script uploads the thumbnail, builds the post, and drops it into your WordPress queue as a draft. In the morning you open the admin, spend ten minutes making the draft sound like you, and hit publish. The transport is automated; the voice is still yours.
+
+That's the same division of labor as our [manual YouTube-to-WordPress workflow](/blog/youtube-to-wordpress-blog-posts), minus the thirty-five minutes of moving text around. And if you're not ready to wire the REST API yet, the [general automation pipeline guide](/blog/youtube-to-blog-automation-pipeline) walks through the trigger-and-convert half of this system without the WordPress specifics.
+
+Start with one video. [Paste the URL into Tube2Blog](https://tube2blog.com), take the structured draft it returns, and push it to WordPress with the curl snippet above — draft status, thumbnail uploaded, embed in place. Do it once, and you'll see why the pipe is worth building. Do it twice, and you'll have built the pipe.
