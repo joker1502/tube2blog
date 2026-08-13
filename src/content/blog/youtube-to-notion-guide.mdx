@@ -1,0 +1,52 @@
+---
+title: "Turn YouTube Videos into Notion Notes (Workflow Guide)"
+description: "We ran our transcript extractor against 12 videos and got 1 transcript back. Here's the YouTube-to-Notion workflow that survives the flaky parts."
+date: "2026-08-13"
+tags:
+  - youtube-to-notion
+  - content-workflow
+  - transcript-extraction
+---
+
+YouTube-to-Notion notes survive on one design rule: treat the transcript as optional and the structure as mandatory. We run a transcript pipeline for Tube2Blog, so while researching this guide we pointed it at twelve videos and measured what actually happens: one came back clean, eleven threw the same error. Both sides of that asymmetry are fixable — Notion's limits are predictable, and YouTube's aren't.
+
+## The 2,000-Character Ceiling Nobody Mentions
+
+Notion's API caps a single text block at 2,000 characters, right there in the [official request limits](https://developers.notion.com/reference/request-limits "Notion API request limits" rel="nofollow noopener"). The editor behaves the same way: paste a long transcript and you get one enormous block that fights every formatting attempt.
+
+We measured what that means for real videos. Our extractor pulled the transcript for a 3:33 music video in about a second: 61 segments, 487 words, 2,089 characters. Already two blocks — and that's a three-minute clip.
+
+Scale the density up and the ceiling becomes the whole conversation. A 30-minute talk runs roughly 18,000 characters, which is nine blocks. A 60-minute podcast lands near 36,000 — eighteen blocks, pasted as a single scrolling wall of text. Split it yourself, section by section, and you've just reinvented the manual work you tried to automate.
+
+## The Transcript Step Is Where Pipelines Die
+
+Here's what the test run looked like. Twelve videos: the historic "Me at the zoo" clip, two TED talks, two more TEDx talks, Steve Jobs' 2005 Stanford commencement, MIT's "How to Speak" lecture, and five of the most-viewed music videos on the platform. Twenty requests total, because we retried the failures. One video returned a transcript — "Never Gonna Give You Up", the 3:33 clip, fetched successfully twice on separate runs. The other eighteen requests failed with the identical message: "Transcript is disabled on this video."
+
+That error lies, or at least guesses. Despacito, Gangnam Style, Uptown Funk and See You Again all have captions — open any of them in a browser and the transcript panel is right there. The endpoint most open-source transcript libraries use (YouTube's internal player API, no key required) is unreliable for scripted clients, and it reports every failure as "disabled". Same code, same server, back to back: one video works, eleven don't. Build your pipeline to treat that message as "couldn't fetch", not "doesn't exist", or you'll silently skip videos that have plenty of captions.
+
+The official route costs more. YouTube's [Data API v3 serves captions](https://developers.google.com/youtube/v3/getting-started#quota "YouTube Data API quota" rel="nofollow noopener") through an OAuth-protected endpoint, and every captions call burns 50 quota units against a default 10,000-unit daily budget — roughly 200 transcript downloads a day. It works reliably and it needs a Google Cloud project with a consent screen, which is exactly why most tutorials skip it and reach for the undocumented endpoint instead.
+
+## A Note Structure That Survives Both
+
+Design the note so it works whether the transcript arrives or not. We stopped chasing a perfect pipe after the third failed retry on a video we'd already fetched once — the structure had to carry the workflow, because the fetch clearly wouldn't.
+
+Start with a Notion database, not a pile of loose pages. Give it properties: Title, URL, Channel, Published, Duration, Tags, and Status (queued / watched / noted / dropped). Every video gets one row, and the note lives in the page behind it.
+
+The page template holds four sections. Summary: two or three sentences written while the video plays, so the note has a spine even with zero transcript. Key points: plain bullets. Timestamped notes: keep `[mm:ss]` markers on anything quotable — the transcript API returns a per-segment offset, and the marker is what lets you jump straight back into the video instead of scrubbing. Action items: anything the video made you want to do.
+
+Chunk before you paste. Cut the transcript at natural boundaries — a topic change, the Q&A starting — and keep each chunk under 1,800 characters. That leaves headroom under the 2,000 cap and produces one Notion block per idea, which is the entire point of notes. Our 3:33 video needs two chunks; a 60-minute podcast needs roughly twenty. Paste each chunk as its own block and the page reads like an outline, not a dump.
+
+## Four Ways to Get a Video Into Notion, Compared
+
+| Route | Transcript? | Time per video | Breaking point |
+|:------|:------------|:---------------|:---------------|
+| Web clipper bookmark | No — embed only | 30 seconds | Nothing to search |
+| Manual paste from transcript panel | Yes | 10-15 minutes | One giant block, no timestamps |
+| No-code connector (Zapier/Make) | Sometimes | 2-5 minutes | Same flaky endpoint, plus a monthly fee |
+| API script | Yes, if failures are handled | 1-2 minutes | Quota, and 2,000-char chunking |
+
+## The Workflow, End to End
+
+Drop the URL into a queue row the moment you save the video — do it from your phone while you're standing in line. Later, at a desk, fetch the transcript; if the fetch fails, mark the row watched and write the summary from the video itself, because the note survives either way. Convert the transcript before it touches Notion — this is where the [first-video-to-blog path](/blog/convert-first-youtube-video-to-blog) and the [full transcript workflow](/blog/youtube-transcript-to-blog-workflow) pay off: structure the draft, then paste each section into its own block. The `[mm:ss]` markers stay; they're the difference between notes you re-read and notes you re-watch. A weekly pass turns "noted" rows into drafts, following the discipline we covered in [how to structure videos for easy repurposing](/blog/how-to-structure-youtube-videos-for-easy-blog-repurposing).
+
+Start with one video and one database row. [Paste the URL into Tube2Blog](https://tube2blog.com), take the structured draft it returns, and split it into blocks under 2,000 characters. The fetch will fail — we measured the failure rate, and it's steep — but the structure doesn't care. That's the whole trick.
