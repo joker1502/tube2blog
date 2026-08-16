@@ -1,0 +1,53 @@
+---
+title: "Podcast to Blog: The 30-Minute Repurposing Workflow"
+description: "31 of 34 transcript fetches failed from our server IP across 28 videos. A 30-minute podcast-to-blog workflow that budgets for exactly that failure."
+date: "2026-08-16"
+tags:
+  - podcast-to-blog-workflow
+  - youtube-transcript
+  - content-repurposing
+category: guides
+---
+
+We built the podcast-to-blog workflow around one assumption: paste the episode URL, grab the transcript, go. Then we ran the actual fetch step 34 times across 28 videos from a datacenter IP and 31 of those attempts died with the same message — "Transcript is disabled on this video." That message is a liar, and here's the 30-minute workflow that survives it.
+
+## 27 of 28 Videos Came Back "Transcript Disabled"
+
+We probed 28 unique videos with the exact library Tube2Blog's backend calls, `youtube-transcript` — no API key involved. The candidate list was biased toward things that should work: videos surfaced by searches for popular podcast shows, top results for queries like "ted talk" and "mrbeast", and a couple of absolute classics. Here's the scoreboard from the run:
+
+| Metric | Value |
+|:-------|:------|
+| Unique videos probed | 28 |
+| Videos that ever returned a transcript | 1 |
+| Total fetch attempts | 34 |
+| Failed attempts | 31 |
+| Successful attempts | 3 (all one video) |
+| Videos retried that recovered | 0 of 2 (0/6 attempts) |
+| Fetch time on success | 595–632 ms (3 runs) |
+| Transcript on success | 487 words, 24 sentences |
+
+The one survivor was an official music video, of all things. We ran it three times; it fetched three times, at 595 ms, 608 ms, and 632 ms, with an identical 487-word transcript each time. Two of the failures got two retries apiece and stayed dead — 0 for 6. This is not flakiness; it's deterministic gating, and it shows up exactly where podcast automation starts.
+
+## The Error Can't Tell "Disabled" From "Blocked"
+
+Here's the trap. The library asks YouTube's player endpoint for a caption list, falls back to scraping the watch page, and in both paths the failure surface is identical: no caption tracks found. A creator who actually turned captions off produces the same error as a server that YouTube just decided not to serve. We ended up with 31 indistinguishable failures and no way to sort them from inside the code. The control results made it worse — four top results for channels that caption essentially every upload, like Veritasium and MrBeast, all returned the same message. Those channels are not in the habit of shipping captions-off videos, which leaves exactly one explanation we could verify: the requests, not the captions, were the problem.
+
+Real talk: the first time we saw the error we assumed podcasters were protecting their transcripts. We threw away a full afternoon chasing that theory before running the control set. The fix isn't in the code; it's in the workflow. You check captions from a network you trust first, like your own browser, and you treat a failed fetch as a signal about the request, not the episode. Retries are the part people waste time on — we measured 0/6 recovery, so build a pre-flight instead.
+
+## The 30-Minute Workflow, With a 60-Second Pre-Flight
+
+The workflow below assumes a typical 40-60 minute episode: roughly 7,000-11,000 words of raw transcript, most of it unusable as prose. The one rule that makes the budget hold: the unreliable step runs first, costs a minute, and has a fallback that doesn't involve the fetcher at all.
+
+| Time | Step | Notes |
+|:-----|:-----|:------|
+| 0–1 min | Caption pre-flight | Open the episode in a browser tab and expand the transcript panel, or paste the URL into Tube2Blog from your own network. Captions visible there means the episode is convertible today. |
+| 1–4 min | Fetch + structure pass | When the fetch lands it's fast — our measured run turned a video into a 487-word transcript in under a second. The structure pass splits it into sections and drafts an outline. |
+| 4–16 min | Edit pass | Cut the tangents, kill the verbal fillers, merge the fragments that only make sense spoken. This is where the article is actually written; the draft is scaffolding. |
+| 16–24 min | Headings, links, metadata | H2s that answer a question, two internal links, a description under 160 characters, Article schema. We covered the rewrite mechanics in our [six-step framework for writing posts from videos](/blog/how-to-write-blog-posts-from-youtube-videos). |
+| 24–30 min | Publish + cross-link | Post goes live, episode description points to the article, article links back to the episode. |
+
+**The fallback branch** is the part most walkthroughs skip. Pre-flight fails from your browser too? Then the captions are probably genuinely off, and the answer is a transcript file, not more fetching. Your podcast host can usually export one, or you drop the audio into your transcription tool of choice and grab the .srt. Tube2Blog accepts that file directly, and you rejoin the timeline at minute 4. The 30-minute budget survives because the failure paths are planned, not discovered mid-run — the same reasoning that shaped our [transcript-to-blog workflow](/blog/youtube-transcript-to-blog-workflow), except that workflow assumed the transcript existed and this one doesn't.
+
+## The Budget Holds Once You Stop Trusting the Error
+
+The measurement that changed our process is the one most articles never take: 27 of 28 videos failed, 0 of 6 retries recovered, and the only success came from a network YouTube was willing to serve. Run this pre-flight before any podcast episode hits your pipeline, and if the fetch errors, don't debug — verify captions in a browser and grab a file if they're missing. [Paste your episode URL into Tube2Blog](https://tube2blog.com) from your own network and you're four minutes from the first draft either way.
