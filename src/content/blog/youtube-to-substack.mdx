@@ -1,0 +1,58 @@
+---
+title: "YouTube to Substack: Turn Videos into Newsletter Posts"
+description: "Substack's importer is platform-gated and its editor has no canonical field. We probed our own blog for a feed and found none. Here is the route that works."
+date: "2026-10-14"
+tags:
+  - youtube-to-substack
+  - content-repurposing
+  - syndication
+category: guides
+---
+
+Substack will not distribute your video either — same as every other text platform. The difference is that here the newsletter itself is the product, so the written version has to stand alone in an inbox. Publish it on a domain you own first, then hand Substack a copy. The handing-over part is where people lose an afternoon, and we measured why.
+
+## The Editor Has No Canonical Field, So Order Matters
+
+Substack's SEO guide lists exactly four post-level fields you can edit: SEO title, SEO description, post URL, and social preview image. No canonical URL input appears anywhere in that panel, so there is no supported way to tell Google that your domain holds the original. Writers have reported a `canonical_url` field sitting in Substack's post data model with no matching control in the editor, and publications built entirely from imported posts staying `noindex` until at least one post is written inside Substack's own editor — both documented in a public writeup of one site's syndication attempt.
+
+Practical consequence: the article goes live on your site first, the Substack copy follows. On [Medium the same sequencing rule applies](/blog/youtube-to-medium), except Medium gives you a real canonical setting and Substack doesn't. Treat the newsletter copy as distribution, not as an SEO asset.
+
+## The Importer Is Platform-Gated, and Our Feed Test Failed
+
+Substack's import tool recognises a fixed list — Medium, Ghost, WordPress, Mailchimp, Beehiiv, Seeking Alpha, Tumblr, Blogspot — and falls back to "check if they have an RSS feed." A custom Next.js domain is in neither bucket until you build the feed yourself.
+
+So we checked ours. From the server that runs this blog, four feed paths, one command each:
+
+- `tube2blog.com/rss.xml` → 404
+- `tube2blog.com/feed.xml` → 404
+- `tube2blog.com/atom.xml` → 404
+- `tube2blog.com/blog/rss.xml` → HTTP 200, but the body came back as the site's HTML index, not XML
+
+Thirty-four published posts, zero machine-readable feeds. Whatever we paste into Substack's import box, no URL on that domain returns something it can parse. Two fixes, and both are yours to do: add a route that emits full post HTML inside `content:encoded` (summary-only feeds import as stubs, and Substack's docs warn some platforms expose only the latest twenty posts), or skip the feed entirely and use the manual path — paste each post, then change its publication date in post settings to the original date, which the docs describe as the supported fallback.
+
+One more detail nobody mentions until it bites: imported posts often arrive wearing the source platform's subscribe banner. Substack's own instructions tell you to open the post, find the three-dot menu, and delete that block by hand. Budget a minute or two per post for cleanup.
+
+| Route into Substack | What it needs | Canonical | Hands-on work |
+|:-------------------|:--------------|:----------|:--------------|
+| Import from a known platform | A Medium / Ghost / WordPress / Mailchimp / Beehiiv / Tumblr / Blogspot URL, or a campaign export | Not offered | Delete the imported banner, pick the audience |
+| Import from RSS | A feed carrying full post HTML | Not offered | Build the feed, verify no truncation |
+| Paste by hand | The article text | Not offered | Backdate each post manually |
+| Native video post | The video file you own | Not applicable | Upload, then edit the generated transcript |
+
+## Native Video Posts Take the Caption Hunt Off the Table
+
+Substack has a video post type, and it changes the math when the footage is yours. Accepted containers are 3GP, AAC, AVI, FLV, MP4, MOV and MPEG-2, with a recommended maximum of 20GB; Substack's video guide says uploads process fastest at 1080p or 2K, H.264 video, AAC audio, 8Mbps or lower, 5 to 120fps. The platform generates a transcript for you, and you can push the audio to your podcast RSS feed from the same screen.
+
+That last part is the real win. Fetching captions from the server side keeps failing for us — on the Medium route we pointed our pipeline at eight long videos and seven came back "transcript disabled," while the watch pages themselves served a bot check to the same IP. Owning the file sidesteps the whole fight: no `.srt` download, no per-request gate, no guessing whether the creator switched captions off.
+
+The transcript Substack hands you is a starting point, and it reads like one. Paragraph breaks land in odd places, filler words survive, and nothing indicates which two sentences mattered. Substack also asks, per post, who receives it and whether it goes out as email — that choice is your only throttle on list fatigue, so use it deliberately instead of sending everything. If you want the wider repurposing loop around this step, the [podcast workflow](/blog/podcast-to-blog-workflow) covers the same plumbing with audio sources.
+
+## Cutting a Spoken Draft Down for an Inbox
+
+We measured our own blog to get a length sanity check: across 34 posts, the median is 1,250 words and the longest runs 1,912. Gmail clips message HTML once it passes roughly 102KB — a figure Google's own community answers and Mailchimp's help docs both state — and our typical post file is about 8KB before email templating. Clipping is therefore not the wall you hit first; attention is. A 60-minute talk translates to roughly 9,000 words of raw transcript, which is seven times our longest published post, and most of that excess is the speaker thinking out loud.
+
+Rough edit order that works for us: delete the spoken scaffolding first (the "so yeah," the restated sentence, the throat-clearing before a point), promote the one claim the video actually defends into the subtitle, embed the video once near the top so readers who want the original can leave cleanly, then drop the chapter list — chapter markers resolve in the player, not in a newsletter.
+
+If you are adapting a script rather than a transcript, the [rewrite process](/blog/youtube-script-to-blog) documents the before-and-after numbers on that path. Either way, do not let the transcript length set the post length.
+
+Start cheap: run the video URL through [Tube2Blog](https://tube2blog.com) to get a structured draft, edit it for an inbox reader, publish on your own domain, then decide whether Substack gets a feed or a paste buffer. The transcript takes minutes. The platform constraints — no canonical field, a gated importer, a per-post send choice — are what decide whether the copy earns you subscribers or just competes with you.
