@@ -1,0 +1,50 @@
+---
+title: "YouTube to Medium: Republish Videos as Articles"
+description: "We pointed our converter at 8 long-form videos and 7 came back gated. Here is the caption route that works, plus Medium's import-tool date trap."
+date: "2026-10-14"
+tags:
+  - youtube-to-medium
+  - content-repurposing
+  - canonical
+category: guides
+---
+
+Medium will not distribute your video. Pull the captions off the video, write the article on the domain you own, then let Medium's import tool publish a copy that points its canonical tag back at you. The order matters, and one setting inside that importer quietly decides whether the copy ever gets read.
+
+## Medium Is Text-First, So the Article Is the Deliverable
+
+A YouTube embed inside a Medium story renders, plays, and contributes nothing to discovery. The platform's distribution runs on stories, tags and read time — a video block is not a story. Which leaves you with a repurposing job: same information, different container.
+
+If you already publish on your own site, treat Medium as the syndication layer. The mechanics are close to the [WordPress auto-publish route](/blog/youtube-to-wordpress-guide), except Medium gives you a canonical tag for free instead of leaving you to wire up the REST API. The upstream work — transcript, outline, draft — is the same pipeline we walk through in the [automation guide](/blog/youtube-to-blog-automation-pipeline).
+
+## Where This Pipeline Actually Breaks: Caption Access
+
+We run a transcript pipeline for Tube2Blog, so while researching this post we pointed it at eight long-form videos: video essays, podcast episodes, a full Sunday news broadcast, a 23-minute talking-head tutorial. Seven failed. Same message every time — "Transcript is disabled on this video." The eighth returned HTTP 200 with an empty body, which is its own kind of broken.
+
+We then fetched the watch pages directly from the same server. Three of the long-form videos came back with `playabilityStatus: LOGIN_REQUIRED` and the "Sign in to confirm you're not a bot" interstitial. A music video in that same batch loaded cleanly and exposed its caption tracks. So the gate is per-request and per-IP, aimed at datacenter traffic, and the library reports it as a channel setting — which sends you hunting for a problem the creator never had.
+
+Real talk: if the video is yours, skip the fight entirely. Open YouTube Studio, go to Subtitles, and download the `.srt` or `.sbv` file. Owner-side access is not behind the bot check, and you get the same text the API would have handed you. If the video belongs to someone else, open the transcript panel in the player by hand, copy it out, and budget ten to fifteen minutes. Flaky caption fetch is the known cost of doing this at volume; we measured the same pattern on the [podcast workflow](/blog/podcast-to-blog-workflow).
+
+## Medium's Import Tool, and the Publish-Date Trap
+
+The right entry point is `medium.com/p/import`. Paste the URL of the post you already published, and per Medium's help center the tool "will automatically backdate the post to the original date, as well as add a canonical link" — plus a visible line at the foot reading "Originally published at [your URL] on [date]".
+
+Then the detail the docs don't lead with: the importer inherits the source post's **last revision date** as the publish date on Medium. Write the piece in July, import it in October, and it appears deep in your profile instead of at the top of it — right where the platform's freshness signal is weakest and publications that reject imported stories expect to find it. Two clean fixes: bump the source post (any real edit, republish) before you import, or paste the text by hand and set the canonical yourself.
+
+Setting it manually is four clicks deep and the menu never says "canonical": edit the story, three-dot menu, More settings, Advanced Settings, tick "This story was originally published elsewhere", paste your URL, save. Only the story's author can set it, so an editor cannot fix it for you later. Verify by viewing the page source and searching for `canonical` — the field you want is called `canonicalUrl`, and if it points at medium.com instead of your domain, the setting did not take.
+
+| Route | Canonical | Publish date | Manual work |
+|:------|:----------|:-------------|:------------|
+| Import a story | Set automatically | Inherited revision date | Update the source post first |
+| Paste + manual canonical | You set it | Today | Four clicks in Advanced Settings |
+| Embed the video and stop | n/a | n/a | None — and no traffic |
+
+## Editing a Spoken Draft for Medium Readers
+
+A transcript is a transcript on any platform; what changes on Medium is the reader's entry point. They arrive mid-scroll from a tag or a feed, see your subtitle and your first two lines, and decide. So spend the effort there, not on volume.
+
+Strip the spoken scaffolding first — the "so yeah", the restated sentence, the throat-clearing before the actual point. Set the subtitle to the single claim the piece defends. Embed the video once, near the top, because Medium readers who want the original need to be able to leave cleanly. And delete the timestamp list; chapter markers resolve in the player, not in a story. If you rewrote around a script instead of a transcript, the [rewrite process](/blog/youtube-script-to-blog) covers the same cleanup with measured before-and-after numbers.
+
+One more rule worth respecting: do not paste a July draft into Medium today and expect October performance. Either the source is fresh or the copy ships as new — you get to pick one, and the importer picks for you if you don't decide first.
+
+Start with the captions you already own: grab the `.srt` from YouTube Studio, paste the video URL into [Tube2Blog](https://tube2blog.com) for a structured first draft, then edit for Medium and import the published version. The transcript is the cheap part. The canonical and the date are what decide whether the copy helps you or competes with you.
