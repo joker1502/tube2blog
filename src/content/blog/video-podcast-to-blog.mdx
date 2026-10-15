@@ -1,0 +1,59 @@
+---
+title: "Video Podcast to Blog: Turn a 5-Hour Episode Into One Post"
+description: "Ten video-podcast episodes, zero caption tracks served to our server — but 199 chapter markers stayed readable. Convert one chapter, not the episode."
+date: "2026-10-15"
+tags:
+  - video-podcast-to-blog
+  - content-repurposing
+  - youtube-chapters
+category: guides
+---
+
+A two-hour interview is not a blog post waiting to be trimmed. It is six to ten possible posts, and the evidence for which one to write sits in the chapter list YouTube still hands you after it has locked everything else. We probed ten video-podcast episodes from the server that runs this blog. Not one caption track came back. The chapters did.
+
+## Zero of Ten Episodes Served Our Server a Caption
+
+The batch: seven Lex Fridman episodes (#459, #461, #488, #494, #500, #501, #502), one Diary of a CEO episode, a third-party breakdown of a Dwarkesh interview, and an 83-second interview cut. Each watch page was requested once, from this blog's server, with a desktop browser user agent.
+
+Ten HTTP 200 responses, 1.2 MB to 2.0 MB of HTML apiece. All ten carried `playabilityStatus: LOGIN_REQUIRED`. Timedtext caption URLs found across all ten pages: zero.
+
+The instinct is to go check whether those hosts disabled captions. Skip it. In an earlier run from the same IP, an official music video returned an identical 487-word transcript on three consecutive requests while long interview videos failed every single time — that run is written up in the [podcast-to-blog workflow](/blog/podcast-to-blog-workflow), and the conclusion holds here: the page is refusing the player, not the captions. Rerunning the fetch buys you nothing. Copy what the page still gives you instead.
+
+## Chapter Markers Survive the Block That Kills the Transcript
+
+Same ten downloads, same gated JSON. Nine of them shipped a complete chapter list — title plus start offset — and the tenth was the 83-second clip that never had chapters to begin with. Total markers across the batch: 199, running 6 to 36 per episode with a median of 23.
+
+Those offsets measure an episode's shape without you hearing a word of it. Median gap between markers: 7.8 minutes. Gaps under five minutes: 36% of them. Gaps over fifteen minutes: 17%. The widest stretch in the batch runs 47.2 minutes, in the #488 episode, and the ThePrimeagen episode pairs its own 42.7-minute stretch with eight gaps shorter than three minutes — one topic eaten whole, surrounded by bursts of small talk.
+
+Here is the part that decides your workflow: our extractor throws timestamps away. In `src/lib/youtube/transcript.ts`, segments are mapped to text and joined with a single space, so whatever the transcript gives you arrives as one undifferentiated string. Once that string exists, no sentence in it can be traced back to the chapter it came from. Pull the chapter list off the page before you touch the transcript, because it is the only structure that survives the block.
+
+| Route | Works from a server IP | Carries speaker labels | Hands-on cost |
+|:------|:----------------------:|:----------------------:|:--------------|
+| Library fetch (`youtube-transcript`) | 0 of 10 episodes today | No | One failed call |
+| Chapter list scraped from the watch page | 9 of 10 | No | Seconds |
+| An episode you recorded yourself | Not applicable | No | Upload, then label turns |
+| Retyping from your own browser player | Yes, as any viewer | No | 10 to 20 minutes |
+
+## Pick the Chapter That Runs Seven to Fifteen Minutes
+
+Length math first, because it kills the "publish the episode" default. Our blog has 35 posts: median 1,275 words, longest 1,978. A five-hour conversation at a conversational 150 words per minute lands near 47,000 words of raw transcript — roughly 24 times the longest piece we have ever published. Nobody edits that into shape in one sitting. What actually happens is a thin summary of the whole thing, which performs worse than staying silent.
+
+The gap data hands you the selection rule. Chapter gaps of roughly seven to fifteen minutes hold a claim, an example, and some pushback without drifting into the next topic. Markers under five minutes are usually a single anecdote, and as a standalone post they read thin. The 47-minute stretch is a separate article that has not been cut apart yet.
+
+Two chapters to skip outright. "Introduction" is never the article — the chapter-to-outline mechanics are already covered in [how to turn YouTube chapters into a post outline](/blog/turn-youtube-chapters-into-blog-outline) — and first-person chapter titles need rewriting before they touch your H2s. The Diary of a CEO episode presents "Why I Joined Anthropic, And Why I Quit" and "The Viral Tweet: OpenAI's Agents Hacked Hugging Face" in the same list. Promote those unedited and your post opens with a claim in a voice your blog cannot back.
+
+## Two Speakers, No Labels, and a Video Track That Fixes It
+
+Every route above returns undifferentiated text. An interview has two voices, and the disagreement between them is where the material lives: the guest hedges, the host counters with a number, the guest concedes half of it. Joined into one string, those turns belong to nobody.
+
+Budget a few minutes to label them by hand before drafting. A ten-minute chapter carries on the order of a dozen turn changes, and the video track is the free tool for finding them — an on-camera podcast lets you watch whose mouth moves while you scrub. That is the one advantage this format holds over the audio-only shows, and it is worth using instead of guessing.
+
+Then check the quotes you plan to publish against the timestamp, not the text. Not because the transcript gets the words wrong. Because it can never tell you whose words they are.
+
+If your open question is length rather than sourcing, [how long a post from a video should run](/blog/how-long-should-a-blog-post-be-from-a-youtube-video) works through the numbers.
+
+## Summary
+
+Ten video-podcast episodes, ten blocked caption fetches, 199 chapter markers readable anyway. That asymmetry is the whole workflow: accept that a server-side transcript grab will fail on this category of video, keep the chapter list, choose a chapter whose gap runs seven to fifteen minutes, and label the speaker turns before you draft a sentence. One sharp ten-minute chapter beats a shallow summary of a five-hour conversation, every time.
+
+Start with the chapter list and a single chapter's worth of transcript. Paste the episode into [Tube2Blog](https://tube2blog.com) when you want a structured draft to edit against, then cut it down to the one argument you can defend — the source material for a video podcast was never the episode. It was the ten minutes where the guest actually made a case.
