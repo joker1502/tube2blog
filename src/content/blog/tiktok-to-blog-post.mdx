@@ -1,0 +1,68 @@
+---
+title: "TikTok to Blog Post: Turn Short Videos into Articles"
+description: "We pushed six TikTok videos through a server and measured the response: full metadata every time, one caption track out of six, 48 words of transcript total."
+date: "2026-10-16"
+tags:
+  - tiktok-to-blog
+  - content-repurposing
+  - video-to-blog
+category: guides
+---
+
+A TikTok clip does not contain a blog post. Six of them, measured from the server that runs this blog, ran a combined 120 seconds. That is about 300 words of speech at a normal talking pace — a quarter of one of our posts. The interesting part is not the word count. It is that TikTok hands over almost everything except the words, and the one thing most conversion tools do with a TikTok URL is reject it outright.
+
+## Your Converter Rejects the URL Before It Reads a Word
+
+Our own converter returns HTTP 400 `{"error":"Invalid YouTube URL"}` when you paste a TikTok link. It does the same for Vimeo. That is not a transcript problem dressed up as a validation problem — it is pure routing.
+
+The cause sits in nine lines. `extractVideoId` in `src/lib/youtube/transcript.ts` matches `youtu.be/`, `youtube.com/watch?v=`, `youtube.com/embed/` and `youtube.com/shorts/`. Anything else throws `INVALID_YOUTUBE_URL`, and the API route turns that into a 400 before the request reaches the transcript fetcher or the model.
+
+I ran the request twice, expecting a fetch error on both attempts. Both times: a URL error. Worth knowing, before you spend an evening blaming the transcript layer.
+
+## TikTok Serves the Metadata and Withholds the Words
+
+Six requests, six HTTP 200 responses, 394 KB to 402 KB of HTML each, `statusCode: 0` on the video-detail object. Every page carried the full item structure: description, duration, creation timestamp, `playAddr`, bitrate, hashtag offsets, audio info. No login wall, no captcha, no bot gate on a plain desktop user agent.
+
+Caption tracks were the exception. `video.subtitleInfos` came back as a populated array on one video out of six. `claInfo.captionInfos` matched it exactly, and the field `claInfo.noCaptionReason` told the rest of the story: value `3` on four clips, value `1` on one, and absent on the single clip that did have a track. `enableAutoCaption` was `true` on all six, `hasOriginalAudio` was `true` on the ones we checked. The capability is switched on; the track simply is not there.
+
+That asymmetry is worth comparing against YouTube. There, the page refuses the player entirely — ten video-podcast episodes returned `playabilityStatus: LOGIN_REQUIRED` with zero timedtext URLs in a run documented in the [podcast-to-blog workflow](/blog/podcast-to-blog-workflow). Two platforms, two different withholdings. YouTube keeps the chapter list and loses the player. TikTok keeps the whole item record and loses the caption array.
+
+The single track we did get is small enough to quote in full: 396 bytes, format `webvtt`, `Source: "ASR"`, five cues, 48 words, for a 14-second clip. It fetched from the server without credentials. Its signed URL carried an `UrlExpire` timestamp exactly 48 hours out, which means a caption you scrape today is a caption you cannot re-fetch next week.
+
+The oEmbed endpoint is the same trade in miniature. Six for six HTTP 200. The `title` field is the caption text, character-for-character identical to what the video page returned, and nothing in that sixteen-field payload is a transcript — or a way to request one.
+
+## Twenty-Three Clips Per Post, and the Arithmetic Doesn't Move
+
+Our six test videos ran 14, 27, 21, 24, 24 and 10 seconds — a median of 22.5 seconds. At a conversational 150 words per minute that median clip holds about 56 words. All six together land near 300 words, which is 23.5% of the median 1,275-word post on this blog (the length math is in [how long a post from a video should run](/blog/how-long-should-a-blog-post-be-from-a-youtube-video)). You would need roughly 23 median-length TikToks to fill one article at our house length.
+
+| Route | What our server got | Text it yields | Cost |
+|:------|:--------------------|:---------------|:-----|
+| Converter API with a TikTok URL | HTTP 400, invalid URL | Zero words | One request |
+| Video page JSON, desktop UA | 200, 6 of 6, full item record | No spoken words, 69-character caption median | Seconds |
+| oEmbed | 200, 6 of 6, sixteen fields | Caption text only, identical to `desc` | Seconds |
+| Caption track, when it exists | 200, WebVTT, 396 bytes | 48 words on a 14-second clip | Must be captured within 48 hours |
+| Recording yourself reading the clip | Not applicable | Whatever you wrote | Ten minutes per clip |
+
+Nothing in that table produces a post on its own. Which kills the single-clip workflow and leaves you with the bundle — the same conclusion we reached about Shorts in [turning short videos into posts](/blog/turn-youtube-shorts-into-blog-posts), now with numbers behind it.
+
+## The Two Text Fields TikTok Always Returns
+
+You get the caption on every clip. Median length in our sample: 69 characters, ranging 16 to 162, and it matches the oEmbed `title` exactly — same string, both endpoints. That is the creator's own one-sentence summary of the video, and it is the sentence you would otherwise spend your first paragraph failing to write.
+
+Then there is `textExtra`, which is the structural signal nobody talks about. Each entry carries a `start` offset, an `end` offset and a `type` — `1` for hashtags, `0` for mentions, and mentions also carry a `userId` — which makes the array a parsed map of the caption rather than a string. Across our six clips that added up to 21 hashtags. Five of the six carried at least one, and the busiest carried ten.
+
+Treat that list the way you would treat a YouTube chapter list: a topic map, not prose. Cluster four or five clips that share a hashtag. The outline writes itself. The ten-tag clip in our sample was a table of contents for its own creator's backlog.
+
+One caution about captions. TikTok's own page config still carries A/B test parameters named `add_transcript_seo` and `add_info_card_seo`, both at version `v2`. Transcript-driven exposure on the platform is being tested, not settled. A pipeline that assumes captions are always there will break the week the experiment flips.
+
+## Author Pages Are a Dead End, and Googlebot Gets a 403
+
+Do not plan a scraper that walks a creator's profile. We pulled three of them — @nasa, @khaby.lame and @mrbeast — and got HTTP 200 with roughly 372 KB of HTML each, hydration JSON included, `statusCode: 0` for all three. The `userInfo.itemList` array was empty in every single case. Zero posts server-rendered, and no error code to explain it away.
+
+The user agent matters too. Swapping in a Googlebot UA on the same profile returned HTTP 403 with a nine-byte body. A Facebook crawler UA fared differently: 200. But only 5,835 bytes came back — a shell with the profile title, the bio, and nothing else. No post list, no item data, no hydration JSON. So the desktop-browser UA is the only one that gets you the metadata. Still no post list.
+
+## Summary
+
+Six TikTok videos, six clean HTTP 200s, one caption track, 48 words of ASR transcript, 300 words of speech in total. The platform's item record is generous; its caption coverage is not, and its profile pages are empty to servers. The converter you are probably trying rejects the URL before any of that matters.
+
+Start from the captions and hashtags of a theme you already post about, not from a clip you liked. Pull four to six of them, cluster the hashtags into sections, and write the piece yourself — you are supplying the 1,200 words the platform never had. When you want a structured draft to edit against, paste a long-form YouTube video into [Tube2Blog](https://tube2blog.com) and leave the short-form clips as source material rather than as articles.
