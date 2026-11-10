@@ -1,0 +1,65 @@
+---
+title: "YouTube Interview to Blog Post: What 3 Full Transcripts Show"
+description: "We parsed three published interview transcripts. The host speaks 24-28% of the words, turns run 19-40 words, and one hour of audio can be 5,500 or 9,200 words."
+date: "2026-11-10"
+tags:
+  - youtube-interview-to-blog
+  - content-repurposing
+  - video-to-blog
+category: guides
+---
+
+A 40-minute interview is not a podcast episode with the jokes removed. It is a transcript where roughly a quarter of the words belong to a person you are not writing about, and where the paragraph boundaries you need for an article were never recorded. Both problems are measurable, so I measured them instead of guessing.
+
+I pulled three full interview transcripts published by the same show — Amodei with Askell and Olah (5.2 hours), Bezos (2.2 hours), Jensen Huang (2.4 hours) — and counted words per speaker, turns per episode, and question density. The numbers below are from those files, parsed today. They are the show's own edited transcripts, which are cleaner than YouTube auto-captions, so treat every figure as a best case.
+
+## The Host Owns a Quarter of Your Transcript
+
+| Episode | Runtime | Transcript words | Words/min | Host share | Speaker turns | Turns with "?" | Chapters |
+|:--------|--------:|----------------:|----------:|-----------:|--------------:|---------------:|---------:|
+| Dario Amodei, Amanda Askell, Chris Olah | 314.4 min | 28,818 | 91.7 | 27.8% | 546 | 175 | 40 |
+| Jeff Bezos | 131.1 min | 14,992 | 114.4 | 27.3% | 363 | 93 | 10 |
+| Jensen Huang | 145.5 min | 22,281 | 153.2 | 24.0% | 398 | 121 | 21 |
+
+The interviewer lands between 24.0% and 27.8% of all spoken words in every one of the three. That is not filler to skim past later — it is a full quarter of your raw material that cannot survive into the article, because "so what did you make of that" is not a claim you can publish.
+
+Question-bearing turns are just as consistent: 93 of 363 segments in the Bezos interview, 121 of 398 with Huang, 175 of 546 in the long one. One turn in three or four is a question, and those turns are the only structural markers the transcript gives you for free. Keep them as your section skeleton and delete the rest of the host's speech. Try to write first and prune second, and the interview cadence leaks into your prose — short rhetorical questions, "right?", trailing half-sentences.
+
+## Speaker Turns Wipe Out Your Paragraphs
+
+Median turn length came out at 19 words for Bezos, 31 for Amodei, 40.5 for Huang. Read that again in article terms: your source gives you sentences, never paragraphs. Real paragraphs form where an answer runs long enough to develop an argument, and that information lives in the turn boundaries, not in the text.
+
+Most conversion tools throw those boundaries away before the model sees anything. Our own fetcher does exactly that in `src/lib/youtube/transcript.ts`, where the cue list collapses into one string: `transcript.map((t) => t.text).join(" ")`.
+
+One flat string. No timestamps, no speaker identity, no cue boundaries. For a single-narrator tutorial that is harmless. For a two-person interview it means the host's 24-28% merges straight into the guest's first-person voice, and any sentence the model quotes can come out attributed to the wrong person. That is a fabricated quote written by the plumbing, not by the prompt. The same file also pins `lang: "en"`, so a fully captioned Spanish or German interview is rejected before the transcript layer runs.
+
+Worth a sanity check on your own tool before you blame the video: I sent five interview URLs to our `/api/generate` and got HTTP 422 in 1.1-2.5 seconds on all five. Then six video-editing tutorials, also all 422, in 1.2-1.6 seconds. Eleven of eleven, same message: `Transcript is disabled on this video`. Interviews were not special — the fetching IP was. If your converter fails that fast on a video you can watch with captions on, the message is lying to you.
+
+Pull the transcript with speaker labels from your own export instead, and the boundaries come back. Two-person interviews need nothing more than name changes; the Amodei episode needs a rule for the three different guests.
+
+## Do the Word Math Before You Draft
+
+Duration tells you almost nothing about volume. Huang spoke 153 words a minute, Amodei 92, Bezos 114. Per hour of audio that is 9,190 words versus 5,500 — a 1.7x spread on the same show, same host, same recording setup.
+
+So stop estimating from runtime. Multiply hours by your measured words-per-hour once, at the start:
+
+- 2-hour interview at a brisk 150 wpm ≈ 18,000 words
+- 2-hour interview at a measured 92 wpm ≈ 11,000 words
+
+Then pick your retention rate on purpose. Our blog posts run a median of about 1,275 words. The Bezos interview at 14,992 words therefore converts at 8.5% retention, and that is the healthy case — the other 91.5% has to be cut by an actual decision, not by a summarizer.
+
+Chapters are the cheapest place to make that decision. Huang's episode carries 21 chapters across 145 minutes, Bezos 10 across 131, Amodei 40 across 314 — one chapter every 6.9 to 13.1 minutes. Take one question-and-answer pair per chapter and you get a 10-12 section article without inventing a structure. Skip straight to "write a blog post from this transcript" and you get a summary of the whole conversation, which reads like a meeting recap and ranks like one.
+
+One more honest limit: interviews carry no demo, no benchmark, no before-and-after. The only evidence in them is what the guest claimed on the record, which is the weakest material to build a how-to on. If the video is an interview, write the part that quotes and argues — the step-by-step belongs in a [tutorial built from a screen recording instead](/blog/video-podcast-to-blog).
+
+| Approach | What you get | What breaks | Time for a 2-hour episode |
+|:---------|:-------------|:------------|:-------------------------|
+| Paste the URL into a converter | A generic recap of the whole conversation | Speaker identity lost, quotes possibly misattributed | Minutes, output needs a full rewrite |
+| Transcript with speaker labels, host turns deleted | Clean guest-only source with question anchors | You lose the chapter timestamps unless you keep them | 10-15 minutes of prep |
+| Chapter list first, then one answer per chapter | A 10-12 section outline that matches the video | Requires chapters to exist at all | 20 minutes before a single sentence |
+
+## What to Do With This
+
+Read the first minute of the transcript and count how often the host talks. If it is one word in four, plan to delete a quarter before you draft anything. If your tool returns `Transcript is disabled` in under three seconds on a video with working captions, the problem is the fetcher's IP, not the video, and no amount of retrying will fix it.
+
+Next step: open the chapter list of the interview you want to convert and write down the one claim worth quoting from each chapter. If a chapter yields no claim, drop it — that is the 91.5% you do not have to write. Then run the transcript through [our converter](/blog/how-long-should-a-blog-post-be-from-a-youtube-video) with the host turns already removed, and you will get sections instead of a summary.
