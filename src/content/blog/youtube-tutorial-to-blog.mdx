@@ -1,0 +1,76 @@
+---
+title: "YouTube Tutorial to Blog Post: Map Chapters to Steps"
+description: "We parsed 24 beginner tutorials across six tools. Median step runs 2:22, only 9% of chapter titles open with a verb, and the files live in the description."
+date: "2026-11-13"
+tags:
+  - youtube-tutorial-to-blog
+  - content-repurposing
+  - video-to-blog
+category: guides
+---
+
+A screen recording is not a lecture with slides. Half of what makes a tutorial work — where one step stops and the next starts, which file the instructor downloaded, what the finished example is supposed to look like — never becomes speech, so a transcript of a tutorial is structurally thinner than a transcript of a talk.
+
+I stopped guessing about how thin and measured it. I pulled the beginner tutorials YouTube returns for six tools, parsed each watch page for chapter markers, step spacing and description contents, and counted. Everything below comes from those 24 videos, read today.
+
+## Your Step Boundaries Already Exist, They Are Just Uneven
+
+Chapters are the only reliable structure a tutorial gives you for free. Twenty-three of the 24 videos had them.
+
+| Video | Chapters | Median step | Shortest | Longest | Links in description |
+|:------|---------:|------------:|---------:|--------:|---------------------:|
+| Excel Tutorial for Beginners | 22 | 0:37 | 0:15 | 2:44 | 13 |
+| Premiere Pro For Beginners (2025) | 68 | 2:29 | 0:22 | 10:22 | 4 |
+| Figma Tutorial for Beginners (28 chapters) | 28 | 2:22 | 0:28 | 10:48 | 14 |
+| Wordpress Tutorial for Beginners (2026) | 17 | 1:10 | 0:24 | 8:22 | 4 |
+| Python Full Course for Beginners | 50 | 4:52 | 0:30 | 48:15 | 10 |
+| Python for Beginners (19 chapters) | 19 | 3:09 | 0:30 | 8:01 | 4 |
+| Photoshop for Beginners (Free Course) | 23 | 8:06 | 1:20 | 17:40 | 8 |
+| Microsoft Excel Tutorial for Beginners (full course) | 7 | 18:10 | 4:14 | 36:16 | 3 |
+
+Median chapter count across the set was 19, and the median step lasted 2 minutes 22 seconds. The spread is the part that matters: shortest step 33 seconds, longest 18 minutes 10 seconds, a 33× difference. Seventeen of the 23 chaptered videos contained at least one step shorter than a minute. Eight contained a block longer than ten minutes.
+
+That kills the lazy conversion. Cutting a post at chapter boundaries gives you a document with 15-second sections and half-hour sections in the same outline, which reads like a badly planned manual. Do this instead: use chapters as the skeleton, then split anything past roughly six minutes and merge runs of sub-minute steps that belong to one action.
+
+## Only 9% of Chapter Titles Start With a Verb
+
+I checked the first word of all 482 chapter titles. Forty-four opened with an action verb. The other nine out of ten were noun phrases — "Cells, columns, and rows", "Start page", "Text layers", "Properties panel".
+
+Noun headings are fine inside software documentation, because the reader already knows the order of operations. A tutorial reader does not. So a straight chapter-to-H2 copy produces exactly the flat, encyclopedic tone that makes a converted post feel machine-made.
+
+The rewrite is mechanical once you see it. "Cells, columns, and rows" becomes "Set up rows and columns before you type anything". "Properties panel" becomes "Change spacing in the properties panel". Add the object a beginner is holding and the outcome they want, and you have a heading that answers a search query instead of naming a UI region.
+
+Real talk: this rewrite pass is the slowest part of the job, roughly the same effort as writing the post from scratch. It is also the only part a generic summarizer cannot do for you, because it needs someone who watched where the mouse went.
+
+## 145 Resource Links Never Make It Into a Transcript
+
+Across the 24 descriptions I counted 145 unique external URLs. Median was 4 per video, the busiest had 14: starter workbooks, sample PSDs, the Figma community file, a GitHub repo, and the instructor's own template pack.
+
+The audio gives you the sentence "grab the template from the description" and none of the template. On camera the exercise is never reproducible without those files, and a transcript-first pipeline keeps the narration while dropping the only artifact the reader needs to follow along. Skip that step and your post tells people to drag a slider on a layer they do not have.
+
+Two rules came out of the audit. Copy the description's link block into the post near the step that uses it, not into a footer dump. And name the file in the sentence that introduces it, so the link has an anchor with meaning.
+
+## Machine-Made Chapters Are a Coin Flip on Long Courses
+
+Four videos had chapter markers without any timestamps in the description, which means YouTube generated the steps itself. Median step on those was 1:48 against 2:22 for hand-written chapters — close enough to look interchangeable, and it is not.
+
+The five-hour Excel course got 7 auto chapters averaging 18 minutes each, useless as a section structure. A Figma crash course got 40 auto chapters at 2:24, a WordPress course 13 at 1:06, a Photoshop course 22 at 1:13. Same automation, four different granularities. If the pipeline trusts auto chapters blindly, the post quality will swing with no change in input.
+
+One more scrape trap: a WordPress tutorial listed 25 timestamps in its description while the player exposed 23 chapters. Read boundaries from the player data, not from the pasted list, or your outline will cite moments the video does not have.
+
+| Source | What it gives you | What it quietly loses |
+|:-------|:------------------|:----------------------|
+| Transcript | Wording, terminology, the instructor's phrasing | Step boundaries, files, on-screen results |
+| Description timestamps | A section list, sometimes stale | Any step the author did not list |
+| Player chapter data | The boundaries the video actually has | Labels are nouns, not tasks |
+| Description links | The files the tutorial depends on | Nothing, if you copy them |
+
+## The Order That Survives All Four Problems
+
+Pull the player chapters first and treat them as the outline, splitting and merging until sections are comparable in size. Rewrite every heading as verb plus object plus outcome. Write one screen action per step and paste the matching description link where the action happens. Only then open the transcript for wording, exact menu names and the terminology the instructor uses out loud.
+
+That order keeps the structure coming from the video and the prose coming from the audio. Reverse it — transcript first, headings later — and you get a long, friendly, unreproducible article that nobody can follow with the video paused.
+
+If your videos carry chapter markers, pair this with our walkthrough on [turning YouTube chapters into a blog outline](/blog/turn-youtube-chapters-into-blog-outline). For tutorials without chapters, the [transcript-to-blog workflow](/blog/youtube-transcript-to-blog-workflow) covers how to build boundaries by hand.
+
+Paste a tutorial URL into the converter on the homepage, then spend your time on the heading rewrite — that is where the post earns its search traffic.
